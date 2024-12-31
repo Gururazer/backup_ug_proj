@@ -1,5 +1,5 @@
-train: D:/ug_mini_proj/utils/datasets/train/images
-val: D:/ug_mini_proj/utils/datasets/val/images
+train: train/images
+val: val/images
 nc: 15
 names:
   0: person

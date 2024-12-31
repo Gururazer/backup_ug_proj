@@ -89,7 +89,7 @@ init_db()  # Initialize the database
 
 # Load default model
 if model is None:
-    current_model_path = "D:/ug_mini_proj/flask_app/static/best.pt"
+    current_model_path = "static/models/best.pt"
     model = YOLO(current_model_path)
 
 # Routes
