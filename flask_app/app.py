@@ -113,6 +113,7 @@ def set_model():
 
 @app.route('/detect_image', methods=['POST'])
 def detect_image():
+    print(model)
     image_file = request.files['image_file']
     if not image_file or not allowed_file(image_file.filename):
         return "No valid image file uploaded", 400
