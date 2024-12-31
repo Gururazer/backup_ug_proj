@@ -41,9 +41,10 @@ def init_db():
 
 def add_model_to_db(name, path):
     """Add a model to the database."""
+    normalized_path = path.replace("\\", "/")
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO models (name, path) VALUES (?, ?)", (name, path))
+    cursor.execute("INSERT INTO models (name, path) VALUES (?, ?)", (name, normalized_path))
     conn.commit()
     conn.close()
 
@@ -63,14 +64,15 @@ def get_model_path(model_id):
     cursor.execute("SELECT path FROM models WHERE id = ?", (model_id,))
     path = cursor.fetchone()
     conn.close()
-    return path[0] if path else None
+    return os.path.normpath(path[0]) if path else None
 
 # Helper to update the selected YOLO model
 def set_selected_model(model_path):
     global model
     try:
-        model = YOLO(model_path)
-        print(f"Model updated to: {model_path}")
+        normalized_path = os.path.normpath(model_path)
+        model = YOLO(normalized_path)
+        print(f"Model updated to: {normalized_path}")
     except Exception as e:
         print(f"Error loading model: {e}")
 
@@ -106,14 +108,23 @@ def detect_page():
 
 @app.route('/set_model', methods=['POST'])
 def set_model():
-    selected_model_path = request.form.get('model_path')
-    if selected_model_path:
-        set_selected_model(selected_model_path)
+    
+    selected_model_id = request.form.get('model_id')
+    
+    if selected_model_id:
+        # Get the model path from the database using the model_id
+        model_path = get_model_path(selected_model_id)
+        
+        if model_path:
+            set_selected_model(model_path)  # Set the model path
+        else:
+            print(f"Error: Model path not found for ID {selected_model_id}")
+    
     return redirect(url_for('detect_page'))
 
 @app.route('/detect_image', methods=['POST'])
 def detect_image():
-    print(model)
+    
     image_file = request.files['image_file']
     if not image_file or not allowed_file(image_file.filename):
         return "No valid image file uploaded", 400
