@@ -1,0 +1,19 @@
+@startuml
+package "Flask Components" {
+  [Flask Web Server] --> [YOLO Model]
+  [Flask Web Server] --> [SQLite Database]
+  [Flask Web Server] --> [File System]
+}
+
+package "File System" {
+  [File System]
+}
+
+package "User Interaction" {
+  [User Devices]
+}
+
+[Flask Web Server] --> [User Devices]
+[YOLO Model] --> [File System]
+[SQLite Database] --> [File System]
+@enduml

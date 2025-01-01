@@ -1,0 +1,52 @@
+@startuml
+!define RECTANGLE #DCE6F1
+
+rectangle "User Device" <<RECTANGLE>> {
+    [Web Browser] : User Interface for Uploading Files and Viewing Results
+}
+
+node "Flask Server" <<RECTANGLE>> {
+    [Flask Application] : 
+        - Routes for Detection and Training
+        - Handles HTTP Requests/Responses
+    [YOLO Model] : 
+        - Pretrained Deep Learning Model
+        - Performs Inference
+    database "SQLite Database" as Database : 
+        - Stores Model Metadata
+        - Tracks Uploaded Files
+    [File Storage] : 
+        - Stores Uploaded Images, Videos, and Results
+}
+
+node "Computation Unit" <<RECTANGLE>> {
+    [GPU/TPU] : Accelerates Model Training and Inference
+    [CUDA/cuDNN] : Provides GPU-Accelerated Deep Learning Operations
+}
+
+rectangle "Deep Learning Framework" <<RECTANGLE>> {
+    [PyTorch] : Backbone for YOLO Model Implementation
+    [Ultralytics] : YOLO-specific Model and Training Tools
+}
+
+rectangle "External Libraries" <<RECTANGLE>> {
+    [MoviePy] : Video Pre/Post-Processing
+    [SQLite3] : Database Integration
+    [Shutil] : File Management
+    [os] : Directory Handling
+}
+
+[Web Browser] --> [Flask Application] : HTTP Request (Upload File)
+[Flask Application] --> [YOLO Model] : Image/Video Input for Detection
+[YOLO Model] --> [GPU/TPU] : Forward Pass for Inference
+[GPU/TPU] --> [CUDA/cuDNN] : Optimized Computations
+[YOLO Model] --> [PyTorch] : Model Execution
+[Flask Application] --> Database : Query/Update (e.g., Store Metadata)
+[Flask Application] --> [File Storage] : Save Uploaded Files
+[Flask Application] --> [MoviePy] : Process Detection Results for Videos
+Database --> [SQLite3] : Database Operations
+[YOLO Model] --> [Ultralytics] : Training/Inference Utilities
+
+[Flask Application] <-- [Web Browser] : HTTP Response (Detected Results)
+[File Storage] --> [Web Browser] : Serve Detected Images/Videos
+@enduml
