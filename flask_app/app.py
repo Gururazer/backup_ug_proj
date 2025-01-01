@@ -89,7 +89,7 @@ init_db()  # Initialize the database
 
 # Load default model
 if model is None:
-    current_model_path = "static/models/best.pt"
+    current_model_path = "static/19epoch.pt"
     model = YOLO(current_model_path)
 
 # Routes
@@ -228,6 +228,7 @@ def train_model():
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'avi', 'mov','pt','yaml'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 if __name__ == '__main__':
     app.run(debug=True)
